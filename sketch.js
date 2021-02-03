@@ -1,52 +1,63 @@
 let values = [];
 let states = [];
-var size = document.getElementById("size");
-var speed = document.getElementById("speed");
-let colWidth, delay, scale = 0.8;
+var size = $("#size");
+var speed = $("#speed");
+let colWidth, colHeight, delay, currInfo, lastInfo, scale = 0.7;
 
 const colors = {
   "off": -1,
   "current": 0,
   "access": 1,
   "sort": 2
-}
+};
 
-async function setup() {
+function setup() {
   canvas = createCanvas(windowWidth * scale, windowHeight * scale);
   canvas.parent("canvas");
-  delay = speed.getAttribute("max") - speed.value;
+  delay = speed.attr("max") - speed.val();
   reset();
-  await shuffling(values);
   noLoop();
 }
 
 function draw() {
-  background(51);
+  background("#333333");
   for (let i = 0; i < values.length; i++) {
     switch (states[i]) {
       case colors.current:
-        fill('#E0777D');
+        fill('#FF4136');
         break;
       case colors.access:
-        fill('#D6FFB7');
+        fill('#01FF70');
         break;
       case colors.sort:
-        fill('#4DA8DA');
+        fill('#0074D9');
         break;
-      default: //colors.off
+      case colors.off:
         fill('#FFFFFF');
+        break;
+      default:
+        break;
     }
-    rect(i * colWidth, height - values[i], colWidth, values[i]);
+    rect(i * colWidth, height - values[i] * colHeight, colWidth, values[i] * colHeight);
   }
 }
 
+function windowResized() {
+  resizeCanvas(windowWidth * scale, windowHeight * scale);
+  colWidth = width / values.length;
+  colHeight = height / values.length;
+  changeStroke();
+  redraw();
+}
+
 async function sorting(name) {
-  loop();
-  clickable(false);
+  showInfo(name);
   states.fill(-1);
+  clickable(false);
+  loop();
   switch (name) {
     case 'shuffle':
-      await shuffling(values);
+      shuffling(values);
       break;
     case 'bubble':
       await bubbleSort(values);
@@ -70,55 +81,65 @@ async function sorting(name) {
       await radixSort(values, values.length);
       break;
     default:
-      alert("not found");
+      break;
   }
-  clickable(true);
   noLoop();
+  clickable(true);
 }
 
 function reset() {
-  colWidth = size.getAttribute("max") - size.value;
-  if (colWidth == 0) {colWidth = 1; }
+  colWidth = size.attr("max") - size.val();
+  if (colWidth == 0) { colWidth = 1; }
   values = new Array(Math.floor(width / colWidth));
   states = new Array(Math.floor(width / colWidth));
   colWidth = width / values.length;
   for (let i = 0; i < values.length; i++) {
-    values[i] = Math.floor((i + 1) * (height / values.length));
+    values[i] = i + 1;
     coloring(i, "off");
   }
+  colHeight = height / values.length;
+  shuffling(values);
 }
+
+size.on("input", () => {
+  reset();
+  changeStroke();
+  redraw();
+});
+
+speed.on("input", () => {
+  delay = speed.attr("max") - speed.val();
+});
 
 function coloring(index, color) {
   states[index] = colors[color];
 }
 
+function showInfo(name) {
+  if (lastInfo) lastInfo.attr("hidden", true);
+  currInfo = $("#" + name);
+  currInfo.removeAttr("hidden");
+  lastInfo = currInfo;
+}
+
 function clickable(bool) {
-  let elements = document.getElementsByClassName("sorting");
+  let elements = $(".sorting");
   for (element of elements) {
     if (bool == true) {
-      element.classList.remove("disabled");
-      element.disabled = false;
+      $(element).removeClass("disabled");
     } else {
-      element.classList.add("disabled");
-      element.disabled = true;
+      $(element).addClass("disabled");
     }
   }
 }
 
-size.oninput = async () => {
-  reset();
+function changeStroke() {
   if (colWidth < 2) {
     noStroke();
   } else {
     strokeWeight(1);
     stroke("black");
   }
-  await shuffling(values);
-  redraw();
-}
-
-speed.oninput = () => {
-  delay = speed.getAttribute("max") - speed.value;
 }
 
 function sleep(ms) {

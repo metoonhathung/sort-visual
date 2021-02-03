@@ -1,15 +1,15 @@
-async function swap(arr, a, b) {
+function swap(arr, a, b) {
     let temp = arr[a];
     arr[a] = arr[b];
     arr[b] = temp;
 }
 
 //Fisher-Yates shuffle
-async function shuffling(arr) {
+function shuffling(arr) {
     let n = arr.length;
     for (let i = n - 1; i > 0; i--) {
         let j = Math.floor(Math.random() * (i + 1));
-        await swap(arr, i, j);
+        swap(arr, i, j);
     }
 }
 
@@ -22,7 +22,7 @@ async function bubbleSort(arr) {
             coloring(j + 1, "access");
             coloring(j, "current");
             if (arr[j] > arr[j + 1]) {
-                await swap(arr, j, j + 1);
+                swap(arr, j, j + 1);
                 // swapped = true;
             }
             await sleep(delay);
@@ -51,7 +51,7 @@ async function selectionSort(arr) {
                 coloring(minIndex, "current");
             }
         }
-        await swap(arr, minIndex, i);
+        swap(arr, minIndex, i);
         coloring(minIndex, "off");
         coloring(i, "sort");
     }
@@ -82,7 +82,6 @@ async function insertionSort(arr) {
 //Merge Sort
 async function mergeSort(arr, low, high) {
     if (low >= high) {
-        console.log("sort: low=", low, "high=", high);
         return;
     }
     let mid = Math.floor((low + high) / 2);
@@ -91,11 +90,12 @@ async function mergeSort(arr, low, high) {
         mergeSort(arr, mid + 1, high)
     ]);
     await merge(arr, low, mid, high);
-
+    for (let elm = low; elm <= high; elm++) {
+        coloring(elm, "sort");
+    }
 }
 
 async function merge(arr, low, mid, high) {
-    console.log('merge: low', low, 'mid', mid, 'mid+1', mid+1,'high', high);
     let n1 = mid - low + 1;
     let n2 = high - mid;
     let arrLeft = new Array(n1);
@@ -109,7 +109,7 @@ async function merge(arr, low, mid, high) {
     let i = 0, j = 0, k = low;
     while (i < n1 && j < n2) {
         coloring(low + i, "current");
-        coloring(mid + 1 + j, "current");
+        coloring(mid + 1 + j, "access");
         await sleep(delay);
         coloring(low + i, "off");
         coloring(mid + 1 + j, "off");
@@ -176,7 +176,7 @@ async function partition(arr, low, high) {
         if (i >= j) {
             return j;
         }
-        await swap(arr, i, j);
+        swap(arr, i, j);
     }
 }
 
@@ -188,7 +188,7 @@ async function heapSort(arr) {
     }
     for (let i = n - 1; i > 0; i--) {
         coloring(i, "sort");
-        await swap(arr, 0, i);
+        swap(arr, 0, i);
         await heapify(arr, i, 0);
     }
     coloring(0, "sort");
@@ -212,7 +212,7 @@ async function heapify(arr, size, i) {
         largest = rightChild;
     }
     if (largest != i) {
-        await swap(arr, i, largest);
+        swap(arr, i, largest);
         await heapify(arr, size, largest);
     }
 }

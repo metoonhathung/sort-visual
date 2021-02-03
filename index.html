@@ -5,69 +5,356 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sort Visual</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="style.css">
-    <link rel="icon" href="https://www.favicon.cc/logo3d/907523.png" type="image/x-icon">
+    <link rel="icon" href="https://img.icons8.com/nolan/2x/bar-chart.png" type="image/x-icon">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/p5.min.js" defer></script>
+    <script src="sketch.js" defer></script>
+    <script src="script.js" defer></script>
 </head>
 
 <body>
-    <div class="navbar navbar-inverse" role="navigation">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand sorting" href="#" onclick="sorting('shuffle')">Shuffle</a>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <button class="sorting btn btn-outline-danger" type="button" onclick="sorting('shuffle');">Shuffle</button>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar">
+            <div class="navbar-nav mr-auto">
+                <a class="nav-item nav-link sorting" href="#" onclick="sorting('bubble')">Bubble</a>
+                <a class="nav-item nav-link sorting" href="#" onclick="sorting('selection')">Selection</a>
+                <a class="nav-item nav-link sorting" href="#" onclick="sorting('insertion')">Insertion</a>
+                <a class="nav-item nav-link sorting" href="#" onclick="sorting('merge')">Merge</a>
+                <a class="nav-item nav-link sorting" href="#" onclick="sorting('quick')">Quick</a>
+                <a class="nav-item nav-link sorting" href="#" onclick="sorting('heap')">Heap</a>
+                <a class="nav-item nav-link sorting" href="#" onclick="sorting('radix')">Radix</a>
             </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a href="#" class="sorting" onclick="sorting('bubble')">Bubble</a></li>
-                    <li><a href="#" class="sorting" onclick="sorting('selection')">Selection</a></li>
-                    <li><a href="#" class="sorting" onclick="sorting('insertion')">Insertion</a></li>
-                    <li><a href="#" class="sorting" onclick="sorting('merge')">Merge</a></li>
-                    <li><a href="#" class="sorting" onclick="sorting('quick')">Quick</a></li>
-                    <li><a href="#" class="sorting" onclick="sorting('heap')">Heap</a></li>
-                    <li><a href="#" class="sorting" onclick="sorting('radix')">Radix</a></li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <label for="size" class="form-label">
-                            <p class="text-primary">Size</p>
-                        </label>
-                        <input type="range" min="1" max="100" value="50" class="form-range sorting" id="size">
-                    </li>
-                    <li>
-                        <label for="speed" class="form-label">
-                            <p class="text-primary">Speed</p>
-                        </label>
-                        <input type="range" min="0" max="100" value="50" class="form-range" id="speed">
-                    </li>
-                    <li>
-                        <a href="https://github.com/metoonhathung/sortvisual/" target="_blank">GitHub</a>
-                    </li>
-                </ul>
+            <div class="navbar-nav">
+                <span class="navbar-text nav-item nav-link">Size</span>
+                <input type="range" min="1" max="100" value="50" class="nav-item nav-link form-range sorting" id="size"
+                    style="padding: 0">
+                <span class="navbar-text nav-item nav-link">Speed</span>
+                <input type="range" min="0" max="100" value="50" class="nav-item nav-link form-range" id="speed"
+                    style="padding: 0">
             </div>
         </div>
-    </div>
+    </nav>
     <div class="container">
         <div id="canvas" class="text-center"></div>
-        <div class='legend'>
-            <ul class='legend-labels text-center'>
-                <li><span style='background:#FFFFFF;'></span><b>Off</b></li>
-                <li><span style='background:#E0777D;'></span><b>Current</b></li>
-                <li><span style='background:#D6FFB7;'></span><b>Access</b></li>
-                <li><span style='background:#4DA8DA;'></span><b>Sort</b></li>
-            </ul>
+        <div class="d-flex justify-content-center">
+            <button type="button" class="btn" style='background:#FF4136;'>Current</button>
+            <button type="button" class="btn" style='background:#01FF70;'>Access</button>
+            <button type="button" class="btn" style='background:#0074D9;'>Sort</button>
+        </div>
+        <hr>
+        <div class="text-center">
+            <div id="shuffle" hidden>
+                <h1 class="display-4">Fisher-Yates Shuffle</h1>
+                <p class="lead"><a target="_blank" href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates
+                        Shuffle:</a> Pull a random card from the deck repeatedly and set it aside.</p>
+                <table class="table table-striped table-hover">
+                    <tr class="d-flex justify-content-around">
+                        <th>
+                            <p class="lead"><b>Time complexity:</b></p>
+                        </th>
+                        <td>
+                            <p class="lead"><b>O(n)</b></p>
+                        </td>
+                    </tr>
+                    <tr class="d-flex justify-content-around">
+                        <th>
+                            <p class="lead"><b>Space complexity:</b></p>
+                        </th>
+                        <td>
+                            <p class="lead"><b>O(1)</b></p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="bubble" hidden>
+                <h1 class="display-4">Bubble Sort</h1>
+                <p class="lead"><a target="_blank" href="https://en.wikipedia.org/wiki/Bubble_sort">Bubble Sort:</a> Adjacent items are
+                    exchanged until the largest is pushed to the right.</p>
+                <table class="table table-striped table-hover">
+                    <tr class="d-flex justify-content-around">
+                        <th>
+                            <p class="lead">Worst time complexity:</p>
+                        </th>
+                        <td>
+                            <p class="lead">O(n<sup>2</sup>)</p>
+                        </td>
+                    </tr>
+                    <tr class="d-flex justify-content-around">
+                        <th>
+                            <p class="lead"><b>Average time complexity:</b></p>
+                        </th>
+                        <td>
+                            <p class="lead"><b>O(n<sup>2</sup>)</b></p>
+                        </td>
+                    </tr>
+                    <tr class="d-flex justify-content-around">
+                        <th>
+                            <p class="lead">Best time complexity:</p>
+                        </th>
+                        <td>
+                            <p class="lead">O(n)</p>
+                        </td>
+                    </tr>
+                    <tr class="d-flex justify-content-around">
+                        <th>
+                            <p class="lead"><b>Space complexity:</b></p>
+                        </th>
+                        <td>
+                            <p class="lead"><b>O(1)</b></p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="selection" hidden>
+                <h1 class="display-4">Selection Sort</h1>
+                <p class="lead"><a target="_blank" href="https://en.wikipedia.org/wiki/Selection_sort">Selection Sort:</a> Go through
+                    the rest of the list and take the next smallest value.</p>
+                <table class="table table-striped table-hover">
+                    <tr class="d-flex justify-content-around">
+                        <th>
+                            <p class="lead">Worst time complexity:</p>
+                        </th>
+                        <td>
+                            <p class="lead">O(n<sup>2</sup>)</p>
+                        </td>
+                    </tr>
+                    <tr class="d-flex justify-content-around">
+                        <th>
+                            <p class="lead"><b>Average time complexity:</b></p>
+                        </th>
+                        <td>
+                            <p class="lead"><b>O(n<sup>2</sup>)</b></p>
+                        </td>
+                    </tr>
+                    <tr class="d-flex justify-content-around">
+                        <th>
+                            <p class="lead">Best time complexity:</p>
+                        </th>
+                        <td>
+                            <p class="lead">O(n<sup>2</sup>)</p>
+                        </td>
+                    </tr>
+                    <tr class="d-flex justify-content-around">
+                        <th>
+                            <p class="lead"><b>Space complexity:</b></p>
+                        </th>
+                        <td>
+                            <p class="lead"><b>O(1)</b></p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="insertion" hidden>
+                <h1 class="display-4">Insertion Sort</h1>
+                <p class="lead"><a target="_blank" href="https://en.wikipedia.org/wiki/Insertion_sort">Insertion Sort:</a> Take the next
+                    value and insert it where it belongs in the already sorted area.</p>
+                <table class="table table-striped table-hover">
+                    <tr class="d-flex justify-content-around">
+                        <th>
+                            <p class="lead">Worst time complexity:</p>
+                        </th>
+                        <td>
+                            <p class="lead">O(n<sup>2</sup>)</p>
+                        </td>
+                    </tr>
+                    <tr class="d-flex justify-content-around">
+                        <th>
+                            <p class="lead"><b>Average time complexity:</b></p>
+                        </th>
+                        <td>
+                            <p class="lead"><b>O(n<sup>2</sup>)</b></p>
+                        </td>
+                    </tr>
+                    <tr class="d-flex justify-content-around">
+                        <th>
+                            <p class="lead">Best time complexity:</p>
+                        </th>
+                        <td>
+                            <p class="lead">O(n)</p>
+                        </td>
+                    </tr>
+                    <tr class="d-flex justify-content-around">
+                        <th>
+                            <p class="lead"><b>Space complexity:</b></p>
+                        </th>
+                        <td>
+                            <p class="lead"><b>O(1)</b></p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="merge" hidden>
+                <h1 class="display-4">Merge Sort</h1>
+                <p class="lead"><a target="_blank" href="https://en.wikipedia.org/wiki/Merge_sort">Merge Sort:</a> Sort smaller sections
+                    of the list and merge the sorted sections together.</p>
+                <table class="table table-striped table-hover">
+                    <tr class="d-flex justify-content-around">
+                        <th>
+                            <p class="lead">Worst time complexity:</p>
+                        </th>
+                        <td>
+                            <p class="lead">O(nlogn)</p>
+                        </td>
+                    </tr>
+                    <tr class="d-flex justify-content-around">
+                        <th>
+                            <p class="lead"><b>Average time complexity:</b></p>
+                        </th>
+                        <td>
+                            <p class="lead"><b>O(nlogn)</b></p>
+                        </td>
+                    </tr>
+                    <tr class="d-flex justify-content-around">
+                        <th>
+                            <p class="lead">Best time complexity:</p>
+                        </th>
+                        <td>
+                            <p class="lead">O(nlogn)</p>
+                        </td>
+                    </tr>
+                    <tr class="d-flex justify-content-around">
+                        <th>
+                            <p class="lead"><b>Space complexity:</b></p>
+                        </th>
+                        <td>
+                            <p class="lead"><b>O(n)</b></p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="quick" hidden>
+                <h1 class="display-4">Quick Sort</h1>
+                <p class="lead"><a target="_blank" href="https://en.wikipedia.org/wiki/Quicksort">Quick Sort:</a> Choose a value, put
+                    all of the larger values to the right and smaller values to its left. Repeat this for smaller
+                    subsets of the list.</p>
+                <table class="table table-striped table-hover">
+                    <tr class="d-flex justify-content-around">
+                        <th>
+                            <p class="lead">Worst time complexity:</p>
+                        </th>
+                        <td>
+                            <p class="lead">O(n<sup>2</sup>)</p>
+                        </td>
+                    </tr>
+                    <tr class="d-flex justify-content-around">
+                        <th>
+                            <p class="lead"><b>Average time complexity:</b></p>
+                        </th>
+                        <td>
+                            <p class="lead"><b>O(nlogn)</b></p>
+                        </td>
+                    </tr>
+                    <tr class="d-flex justify-content-around">
+                        <th>
+                            <p class="lead">Best time complexity:</p>
+                        </th>
+                        <td>
+                            <p class="lead">O(nlogn)</p>
+                        </td>
+                    </tr>
+                    <tr class="d-flex justify-content-around">
+                        <th>
+                            <p class="lead"><b>Space complexity:</b></p>
+                        </th>
+                        <td>
+                            <p class="lead"><b>O(logn)</b></p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="heap" hidden>
+                <h1 class="display-4">Heap Sort</h1>
+                <p class="lead"><a target="_blank" href="https://en.wikipedia.org/wiki/Heapsort">Heap Sort:</a> Put the elements into a
+                    max heap structure. Repeatedly pop the first element off and add it to the sorted section.</p>
+                <table class="table table-striped table-hover">
+                    <tr class="d-flex justify-content-around">
+                        <th>
+                            <p class="lead">Worst time complexity:</p>
+                        </th>
+                        <td>
+                            <p class="lead">O(nlogn)</p>
+                        </td>
+                    </tr>
+                    <tr class="d-flex justify-content-around">
+                        <th>
+                            <p class="lead"><b>Average time complexity:</b></p>
+                        </th>
+                        <td>
+                            <p class="lead"><b>O(nlogn)</b></p>
+                        </td>
+                    </tr>
+                    <tr class="d-flex justify-content-around">
+                        <th>
+                            <p class="lead">Best time complexity:</p>
+                        </th>
+                        <td>
+                            <p class="lead">O(nlogn)</p>
+                        </td>
+                    </tr>
+                    <tr class="d-flex justify-content-around">
+                        <th>
+                            <p class="lead"><b>Space complexity:</b></p>
+                        </th>
+                        <td>
+                            <p class="lead"><b>O(1)</b></p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="radix" hidden>
+                <h1 class="display-4">Radix Sort</h1>
+                <p class="lead"><a target="_blank" href="https://en.wikipedia.org/wiki/Radix_sort">Radix Sort:</a> Organize each element
+                    by its least significant digit, and work up from there.</p>
+                <table class="table table-striped table-hover">
+                    <tr class="d-flex justify-content-around">
+                        <th>
+                            <p class="lead">Worst time complexity:</p>
+                        </th>
+                        <td>
+                            <p class="lead">O(n*k/d)</p>
+                        </td>
+                    </tr>
+                    <tr class="d-flex justify-content-around">
+                        <th>
+                            <p class="lead"><b>Average time complexity:</b></p>
+                        </th>
+                        <td>
+                            <p class="lead"><b>O(n*k/d)</b></p>
+                        </td>
+                    </tr>
+                    <tr class="d-flex justify-content-around">
+                        <th>
+                            <p class="lead">Best time complexity:</p>
+                        </th>
+                        <td>
+                            <p class="lead">O(n*k/d)</p>
+                        </td>
+                    </tr>
+                    <tr class="d-flex justify-content-around">
+                        <th>
+                            <p class="lead"><b>Space complexity:</b></p>
+                        </th>
+                        <td>
+                            <p class="lead"><b>O(n+2<sup>d</sup>)</b></p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="text-center bg-primary">
+            <a target="_blank" href="https://github.com/metoonhathung/sortvisual">
+                <p class="lead text-white">Source Code on GitHub</p>
+            </a>
         </div>
     </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/p5.min.js"></script>
-    <script src="sketch.js"></script>
-    <script src="sort.js"></script>
 </body>
 
 </html>
