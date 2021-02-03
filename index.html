@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sort Visual</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="icon" href="https://www.favicon.cc/logo3d/907523.png" type="image/x-icon">
+</head>
+
+<body>
+    <div class="navbar navbar-inverse" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand sorting" href="#" onclick="sorting('shuffle')">Shuffle</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="#" class="sorting" onclick="sorting('bubble')">Bubble</a></li>
+                    <li><a href="#" class="sorting" onclick="sorting('selection')">Selection</a></li>
+                    <li><a href="#" class="sorting" onclick="sorting('insertion')">Insertion</a></li>
+                    <li><a href="#" class="sorting" onclick="sorting('merge')">Merge</a></li>
+                    <li><a href="#" class="sorting" onclick="sorting('quick')">Quick</a></li>
+                    <li><a href="#" class="sorting" onclick="sorting('heap')">Heap</a></li>
+                    <li><a href="#" class="sorting" onclick="sorting('radix')">Radix</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <label for="size" class="form-label">
+                            <p class="text-primary">Size</p>
+                        </label>
+                        <input type="range" min="1" max="100" value="50" class="form-range sorting" id="size">
+                    </li>
+                    <li>
+                        <label for="speed" class="form-label">
+                            <p class="text-primary">Speed</p>
+                        </label>
+                        <input type="range" min="0" max="100" value="50" class="form-range" id="speed">
+                    </li>
+                    <li>
+                        <a href="https://github.com/metoonhathung/sortvisual/" target="_blank">GitHub</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div id="canvas" class="text-center"></div>
+        <div class='legend'>
+            <ul class='legend-labels text-center'>
+                <li><span style='background:#FFFFFF;'></span><b>Off</b></li>
+                <li><span style='background:#E0777D;'></span><b>Current</b></li>
+                <li><span style='background:#D6FFB7;'></span><b>Access</b></li>
+                <li><span style='background:#4DA8DA;'></span><b>Sort</b></li>
+            </ul>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/p5.min.js"></script>
+    <script src="sketch.js"></script>
+    <script src="sort.js"></script>
+</body>
+
+</html>
