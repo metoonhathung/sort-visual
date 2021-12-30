@@ -1,16 +1,7 @@
 # Sorting Visualization
 
-https://metoonhathung.github.io/sortvisual/
+[Demo](https://metoonhathung.github.io/sort-visual/)
 
-Description: A web application to visualize different comparison sorting algorithms such as Bubble Sort, Selection Sort, Insertion Sort, Merge Sort, Quick Sort, Heap Sort and non-comparison such as Radix Sort. Size of input and animation speed is customizable by user's input.
+Description: A web application to visualize different sorting algorithms.
 
-Technologies: Javascript, HTML, CSS, p5.js
-
-### To run the code locally:
-
-```
-git clone https://github.com/metoonhathung/sortvisual.git
-cd sortvisual
-```
-
-Open `index.html` in the browser
+Technologies: p5.js, JavaScript, HTML, CSS, Bootstrap
